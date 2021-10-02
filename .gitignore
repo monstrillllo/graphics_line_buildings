@@ -1,1 +1,3 @@
-/gui/graphic_editor.ui
+/venv/
+__pycache__/
+.idea/

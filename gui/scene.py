@@ -1,22 +1,26 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QRectF
-from pixel_item import Pixel_item
+from pixel_item import PixelItem
 
 
-class My_scene(QtWidgets.QGraphicsScene):
+class MyScene(QtWidgets.QGraphicsScene):
     def __init__(self, parent, rect: QRectF):
         super().__init__(QRectF(rect), parent=parent)
-        self.rclick = False
+        # self.rclick = False
+        self.pos1 = None
+        self.pos2 = None
+        self.type = None
 
     def mousePressEvent(self, event):
         if event.button() == 1:
-            self.rclick = True
-
-    def mouseMoveEvent(self, event):
-        if self.rclick:
-            item = Pixel_item()
-            item.setPos(event.scenePos())
-            self.addItem(item)
+            self.pos1 = event.scenePos()
 
     def mouseReleaseEvent(self, event):
-        self.rclick = False
+        if event.button() == 1:
+            self.pos2 = event.scenePos()
+            item = PixelItem(self.pos1, self.pos2, self.type)
+            self.addItem(item)
+            item.setPos(self.pos1)
+
+    def set_line_type(self, type):
+        self.type = type
