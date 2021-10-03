@@ -98,22 +98,22 @@ class PixelItem(QtWidgets.QGraphicsItem):
             for i in range(int(main_axis_delta)):
                 sec_drown = False
                 if e >= 0:
-                    painter.setPen(QColor(255*0.5, 255*0.5, 255*0.5))
+                    painter.setPen(QColor(0, 0, 0, 255 * abs(1/e) if e != 0 else 255))
                     if max(len_x, len_y) == len_x:
                         painter.drawPoint(main_axis, secondary_axis)
                     else:
                         painter.drawPoint(secondary_axis, main_axis)
                     sec_drown = True
-                    painter.setPen(QColor(255, 255, 255))
+                    painter.setPen(QColor(0, 0, 0, 255))
                     secondary_axis += secondary_increase
                     e -= 2 * main_axis_delta
                 if not sec_drown:
-                    painter.setPen(QColor(255 * 0.5, 255 * 0.5, 255 * 0.5))
+                    painter.setPen(QColor(0, 0, 0, 255 * abs(1/e) if e != 0 else 255))
                     if max(len_x, len_y) == len_x:
                         painter.drawPoint(main_axis, secondary_axis + secondary_increase)
                     else:
                         painter.drawPoint(secondary_axis + secondary_increase, main_axis)
-                    painter.setPen(QColor(255, 255, 255))
+                    painter.setPen(QColor(0, 0, 0, 255))
                 main_axis += main_increase
                 e += 2 * secondary_axis_delta
                 if max(len_x, len_y) == len_x:
