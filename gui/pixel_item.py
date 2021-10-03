@@ -89,7 +89,7 @@ class PixelItem(QtWidgets.QGraphicsItem):
                 main_increase = 1 if self.pos2.y() > self.pos1.y() else -1
             increment = -1 if secondary_axis_delta >= 0 else 1
 
-            e = 2 * secondary_axis_delta - main_axis_delta
+            e = (secondary_axis_delta / main_axis_delta) - 0.5
             if main_axis_delta == len_x:
                 painter.drawPoint(main_axis, secondary_axis)
             else:
@@ -98,20 +98,23 @@ class PixelItem(QtWidgets.QGraphicsItem):
             for i in range(int(main_axis_delta) + 1):
                 if e >= 0:
                     secondary_axis += secondary_increase
-                    e -= 2 * main_axis_delta
+                    e -= 1
                 main_axis += main_increase
-                e += 2 * secondary_axis_delta
+                e += abs(secondary_axis_delta / main_axis_delta)
                 color = 255 * abs(e - int(e))
+                # print(color)
                 painter.setPen(QColor(color, color, color))
                 if max(len_x, len_y) == len_x:
                     painter.drawPoint(main_axis, secondary_axis)
                 else:
                     painter.drawPoint(secondary_axis, main_axis)
                 if i != 0 and i != int(main_axis_delta):
-                    color = 255 * (1 - abs(e - int(e)))
+                    color = 255 * (1 - (abs(e - int(e))))
+                    print(e)
+                    print(color)
                     painter.setPen(QColor(color, color, color))
                     new_increment = increment * -1 if e >= 0 else increment
                     if max(len_x, len_y) == len_x:
-                        painter.drawPoint(main_axis, secondary_axis + new_increment)
+                        painter.drawPoint(main_axis, secondary_axis + secondary_increase)
                     else:
-                        painter.drawPoint(secondary_axis + new_increment, main_axis)
+                        painter.drawPoint(secondary_axis + secondary_increase, main_axis)
