@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'graphic_editor.ui'
+# Form implementation generated from reading ui file 'graphicsEditor.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -11,19 +11,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(640, 480)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_GraphicEditor(object):
+    def setupUi(self, GraphicEditor):
+        GraphicEditor.setObjectName("GraphicEditor")
+        GraphicEditor.resize(640, 480)
+        GraphicEditor.setMinimumSize(QtCore.QSize(640, 480))
+        GraphicEditor.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.centralwidget = QtWidgets.QWidget(GraphicEditor)
         self.centralwidget.setObjectName("centralwidget")
         self.main_graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
         self.main_graphicsView.setGeometry(QtCore.QRect(5, 31, 630, 440))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.main_graphicsView.sizePolicy().hasHeightForWidth())
-        self.main_graphicsView.setSizePolicy(sizePolicy)
         self.main_graphicsView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.main_graphicsView.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.main_graphicsView.setObjectName("main_graphicsView")
@@ -36,24 +33,28 @@ class Ui_MainWindow(object):
         self.btn_line_type3 = QtWidgets.QPushButton(self.centralwidget)
         self.btn_line_type3.setGeometry(QtCore.QRect(65, 3, 25, 25))
         self.btn_line_type3.setObjectName("btn_line_type3")
-        MainWindow.setCentralWidget(self.centralwidget)
+        self.btn_debug_next = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_debug_next.setGeometry(QtCore.QRect(610, 3, 25, 25))
+        self.btn_debug_next.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("next.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_debug_next.setIcon(icon)
+        self.btn_debug_next.setObjectName("btn_debug_next")
+        self.btn_debug_start = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_debug_start.setGeometry(QtCore.QRect(580, 3, 25, 25))
+        self.btn_debug_start.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("bug.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_debug_start.setIcon(icon1)
+        self.btn_debug_start.setObjectName("btn_debug_start")
+        GraphicEditor.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(GraphicEditor)
+        QtCore.QMetaObject.connectSlotsByName(GraphicEditor)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, GraphicEditor):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "GraphicEditor"))
-        self.btn_line_type1.setText(_translate("MainWindow", "1"))
-        self.btn_line_type2.setText(_translate("MainWindow", "2"))
-        self.btn_line_type3.setText(_translate("MainWindow", "3"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+        GraphicEditor.setWindowTitle(_translate("GraphicEditor", "GraphicEditor"))
+        self.btn_line_type1.setText(_translate("GraphicEditor", "1"))
+        self.btn_line_type2.setText(_translate("GraphicEditor", "2"))
+        self.btn_line_type3.setText(_translate("GraphicEditor", "3"))

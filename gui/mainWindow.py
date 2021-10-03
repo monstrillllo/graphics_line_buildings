@@ -4,12 +4,13 @@ from scene import MyScene
 import graphic_editor_ui
 
 
-class GraphicEditor(QtWidgets.QMainWindow, graphic_editor_ui.Ui_MainWindow):
+class GraphicEditor(QtWidgets.QMainWindow, graphic_editor_ui.Ui_GraphicEditor):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.resize(640*2, 480*2)
         self.btn_line_type1.clicked.connect(self.btn_line_type1_clicked)
+        self.btn_line_type1.setDisabled(True)
         self.btn_line_type2.clicked.connect(self.btn_line_type2_clicked)
         self.btn_line_type3.clicked.connect(self.btn_line_type3_clicked)
         self.main_graphicsView.setGeometry(QtCore.QRect(

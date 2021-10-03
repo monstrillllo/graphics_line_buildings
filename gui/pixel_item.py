@@ -74,7 +74,6 @@ class PixelItem(QtWidgets.QGraphicsItem):
         elif self.type == 'anti-aliasing':
             x = 0
             y = 0
-            # diff = self.pos2 - self.pos1
             len_x = abs(self.pos2.x() - self.pos1.x())
             len_y = abs(self.pos2.y() - self.pos1.y())
 
@@ -88,6 +87,7 @@ class PixelItem(QtWidgets.QGraphicsItem):
             else:
                 secondary_increase = 1 if self.pos2.x() > self.pos1.x() else -1
                 main_increase = 1 if self.pos2.y() > self.pos1.y() else -1
+            increment = -1 if secondary_axis_delta >= 0 else 1
 
             e = 2 * secondary_axis_delta - main_axis_delta
             if main_axis_delta == len_x:
@@ -95,28 +95,23 @@ class PixelItem(QtWidgets.QGraphicsItem):
             else:
                 painter.drawPoint(secondary_axis, main_axis)
 
-            for i in range(int(main_axis_delta)):
-                sec_drown = False
+            for i in range(int(main_axis_delta) + 1):
                 if e >= 0:
-                    painter.setPen(QColor(0, 0, 0, 255 * abs(1/e) if e != 0 else 255))
-                    if max(len_x, len_y) == len_x:
-                        painter.drawPoint(main_axis, secondary_axis)
-                    else:
-                        painter.drawPoint(secondary_axis, main_axis)
-                    sec_drown = True
-                    painter.setPen(QColor(0, 0, 0, 255))
                     secondary_axis += secondary_increase
                     e -= 2 * main_axis_delta
-                if not sec_drown:
-                    painter.setPen(QColor(0, 0, 0, 255 * abs(1/e) if e != 0 else 255))
-                    if max(len_x, len_y) == len_x:
-                        painter.drawPoint(main_axis, secondary_axis + secondary_increase)
-                    else:
-                        painter.drawPoint(secondary_axis + secondary_increase, main_axis)
-                    painter.setPen(QColor(0, 0, 0, 255))
                 main_axis += main_increase
                 e += 2 * secondary_axis_delta
+                color = 255 * abs(e - int(e))
+                painter.setPen(QColor(color, color, color))
                 if max(len_x, len_y) == len_x:
                     painter.drawPoint(main_axis, secondary_axis)
                 else:
                     painter.drawPoint(secondary_axis, main_axis)
+                if i != 0 and i != int(main_axis_delta):
+                    color = 255 * (1 - abs(e - int(e)))
+                    painter.setPen(QColor(color, color, color))
+                    new_increment = increment * -1 if e >= 0 else increment
+                    if max(len_x, len_y) == len_x:
+                        painter.drawPoint(main_axis, secondary_axis + new_increment)
+                    else:
+                        painter.drawPoint(secondary_axis + new_increment, main_axis)
