@@ -6,14 +6,14 @@ from PyQt5.QtWidgets import QWidget
 
 
 class PixelItem(QtWidgets.QGraphicsItem):
-    def __init__(self, pos1: QPoint, pos2: QPoint, type_):
+    def __init__(self, pos1: QPoint, pos2: QPoint, type_, debug, parent_scene):
         super().__init__()
         self.pos1 = pos1
         self.pos2 = pos2
-        if type_:
-            self.type = type_
-        else:
-            self.type = 'dda'
+        self.debug = debug
+        self.parent_scene = parent_scene
+        self.debug_counter = self.parent_scene.debug_counter
+        self.type = type_
 
     def boundingRect(self) -> QtCore.QRectF:
         deltaY = self.pos2.y() - self.pos1.y()
@@ -25,16 +25,23 @@ class PixelItem(QtWidgets.QGraphicsItem):
     def paint(self, painter: QtGui.QPainter, option, widget: typing.Optional[QWidget] = ...) -> None:
         if self.type == 'dda':
             Diff = self.pos2 - self.pos1
-            len = max(abs(Diff.x()), abs(Diff.y()))
-            dx = Diff.x() / len
-            dy = Diff.y() / len
+            len_ = max(abs(Diff.x()), abs(Diff.y()))
+            dx = Diff.x() / len_
+            dy = Diff.y() / len_
             x = 0
             y = 0
-            for i in range(int(len)):
+            for i in range(int(len_) + 1):
                 x = x + dx
                 y = y + dy
                 point = QPoint(int(x), int(y))
                 painter.drawPoint(point)
+                if self.debug:
+                    if self.debug_counter == len_ or not self.debug:
+                        self.scene().debug = False
+                        self.debug = False
+                        self.parent_scene.debug_counter = 0
+                    if i == self.debug_counter:
+                        break
         elif self.type == 'Bresenham':
             diff = self.pos2 - self.pos1
             delta_primary = diff.x() if abs(diff.x()) >= abs(diff.y()) else diff.y()
@@ -60,6 +67,13 @@ class PixelItem(QtWidgets.QGraphicsItem):
                 res = QPoint(int(primary), int(secondary)) if abs(diff.x()) >= abs(diff.y())\
                     else QPoint(int(secondary), int(primary))
                 painter.drawPoint(res)
+                if self.debug:
+                    if self.debug_counter == int(abs(delta_primary)) or not self.debug:
+                        self.scene().debug = False
+                        self.debug = False
+                        self.parent_scene.debug_counter = 0
+                    if i == self.debug_counter:
+                        break
 
         elif self.type == 'anti-aliasing':
             diff = self.pos2 - self.pos1
@@ -95,3 +109,11 @@ class PixelItem(QtWidgets.QGraphicsItem):
                     res = QPoint(int(primary), int(secondary) + new_increment) if abs(diff.x()) >= abs(diff.y()) \
                         else QPoint(int(secondary) + new_increment, int(primary))
                     painter.drawPoint(res)
+
+                if self.debug:
+                    if self.debug_counter == int(abs(delta_primary)) or not self.debug:
+                        self.scene().debug = False
+                        self.debug = False
+                        self.parent_scene.debug_counter = 0
+                    if i == self.debug_counter:
+                        break
