@@ -14,6 +14,7 @@ class PixelItem(QtWidgets.QGraphicsItem):
         self.parent_scene = parent_scene
         self.debug_counter = self.parent_scene.debug_counter
         self.type = type_
+        self.enableDebugPrint = True
 
     def boundingRect(self) -> QtCore.QRectF:
         deltaY = self.pos2.y() - self.pos1.y()
@@ -41,6 +42,9 @@ class PixelItem(QtWidgets.QGraphicsItem):
                         self.debug = False
                         self.parent_scene.debug_counter = 0
                     if i == self.debug_counter:
+                        if self.enableDebugPrint:
+                            self.enableDebugPrint = False
+                            self.parent_scene.textPanel.insertPlainText(f'x: {round(x, 2)} y: {round(y, 2)}\n')
                         break
         elif self.type == 'Bresenham':
             diff = self.pos2 - self.pos1
@@ -73,6 +77,10 @@ class PixelItem(QtWidgets.QGraphicsItem):
                         self.debug = False
                         self.parent_scene.debug_counter = 0
                     if i == self.debug_counter:
+                        if self.enableDebugPrint:
+                            self.enableDebugPrint = False
+                            self.parent_scene.textPanel.insertPlainText(f'x: {round(res.x(), 2)} '
+                                                                        f'y: {round(res.y(), 2)}\n')
                         break
 
         elif self.type == 'anti-aliasing':
@@ -116,4 +124,8 @@ class PixelItem(QtWidgets.QGraphicsItem):
                         self.debug = False
                         self.parent_scene.debug_counter = 0
                     if i == self.debug_counter:
+                        if self.enableDebugPrint:
+                            self.enableDebugPrint = False
+                            self.parent_scene.textPanel.insertPlainText(f'x: {round(res.x(), 2)} '
+                                                                        f'y: {round(res.y(), 2)}\n')
                         break

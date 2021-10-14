@@ -4,17 +4,19 @@ from pixel_item import PixelItem
 
 
 class MyScene(QtWidgets.QGraphicsScene):
-    def __init__(self, parent, rect: QRectF):
+    def __init__(self, parent, rect: QRectF, textPanel):
         super().__init__(QRectF(rect), parent=parent)
         self.pos1 = None
         self.pos2 = None
         self.type = None
         self.debug = False
         self.debug_counter = 1
+        self.textPanel = textPanel
 
     def mousePressEvent(self, event):
         if event.button() == 1:
             self.pos1 = event.scenePos()
+            self.debug_counter = 1
 
     def mouseReleaseEvent(self, event):
         if event.button() == 1:

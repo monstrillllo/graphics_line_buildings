@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GraphicEditor</class>
+ <widget class="QMainWindow" name="GraphicEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>960</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1280</width>
+    <height>960</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1280</width>
+    <height>960</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>GraphicEditor</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGraphicsView" name="main_graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>31</y>
+      <width>1270</width>
+      <height>690</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_line_type1">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_line_type2">
+    <property name="geometry">
+     <rect>
+      <x>35</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_line_type3">
+    <property name="geometry">
+     <rect>
+      <x>65</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_debug_next">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>next.png</normaloff>next.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_debug_start">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>bug.png</normaloff>bug.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="debug_text_bar">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>726</y>
+      <width>1270</width>
+      <height>229</height>
+     </rect>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
