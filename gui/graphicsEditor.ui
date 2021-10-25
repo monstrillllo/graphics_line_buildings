@@ -45,7 +45,7 @@
    <widget class="QPushButton" name="btn_line_type1">
     <property name="geometry">
      <rect>
-      <x>5</x>
+      <x>60</x>
       <y>3</y>
       <width>25</width>
       <height>25</height>
@@ -58,7 +58,7 @@
    <widget class="QPushButton" name="btn_line_type2">
     <property name="geometry">
      <rect>
-      <x>35</x>
+      <x>90</x>
       <y>3</y>
       <width>25</width>
       <height>25</height>
@@ -71,7 +71,7 @@
    <widget class="QPushButton" name="btn_line_type3">
     <property name="geometry">
      <rect>
-      <x>65</x>
+      <x>120</x>
       <y>3</y>
       <width>25</width>
       <height>25</height>
@@ -84,7 +84,7 @@
    <widget class="QPushButton" name="btn_debug_next">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>1240</x>
       <y>3</y>
       <width>25</width>
       <height>25</height>
@@ -101,7 +101,7 @@
    <widget class="QPushButton" name="btn_debug_start">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>1210</x>
       <y>3</y>
       <width>25</width>
       <height>25</height>
@@ -129,6 +129,45 @@
     </property>
     <property name="readOnly">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_lines">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>3</y>
+      <width>67</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lines:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_circle">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>3</y>
+      <width>67</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Circle:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_circle1">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1</string>
     </property>
    </widget>
   </widget>

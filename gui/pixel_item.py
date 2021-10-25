@@ -25,107 +25,137 @@ class PixelItem(QtWidgets.QGraphicsItem):
 
     def paint(self, painter: QtGui.QPainter, option, widget: typing.Optional[QWidget] = ...) -> None:
         if self.type == 'dda':
-            Diff = self.pos2 - self.pos1
-            len_ = max(abs(Diff.x()), abs(Diff.y()))
-            dx = Diff.x() / len_
-            dy = Diff.y() / len_
-            x = 0
-            y = 0
-            for i in range(int(len_) + 1):
-                x = x + dx
-                y = y + dy
-                point = QPoint(int(x), int(y))
-                painter.drawPoint(point)
-                if self.debug:
-                    if self.debug_counter == len_ or not self.debug:
-                        self.scene().debug = False
-                        self.debug = False
-                        self.parent_scene.debug_counter = 0
-                    if i == self.debug_counter:
-                        if self.enableDebugPrint:
-                            self.enableDebugPrint = False
-                            self.parent_scene.textPanel.insertPlainText(f'x: {round(x, 2)} y: {round(y, 2)}\n')
-                        break
+            self.dda_line(painter)
         elif self.type == 'Bresenham':
-            diff = self.pos2 - self.pos1
-            delta_primary = diff.x() if abs(diff.x()) >= abs(diff.y()) else diff.y()
-            delta_secondary = diff.x() if abs(diff.y()) > abs(diff.x()) else diff.y()
-            e = delta_secondary / delta_primary - 1/2
-
-            primary = 0
-            secondary = 0
-            primary_grow = 1 if delta_primary > 0 else -1
-            secondary_grow = 1 if delta_secondary > 0 else -1
-
-            for i in range(0, int(abs(delta_primary)) + 1):
-
-                if e >= 0:
-                    secondary += secondary_grow
-                    e -= 1
-
-                primary += primary_grow
-                e += abs(delta_secondary/delta_primary)
-
-                new_color = 255 * (abs(e) - abs(int(e)))
-                painter.setPen(QColor(new_color, new_color, new_color))
-                res = QPoint(int(primary), int(secondary)) if abs(diff.x()) >= abs(diff.y())\
-                    else QPoint(int(secondary), int(primary))
-                painter.drawPoint(res)
-                if self.debug:
-                    if self.debug_counter == int(abs(delta_primary)) or not self.debug:
-                        self.scene().debug = False
-                        self.debug = False
-                        self.parent_scene.debug_counter = 0
-                    if i == self.debug_counter:
-                        if self.enableDebugPrint:
-                            self.enableDebugPrint = False
-                            self.parent_scene.textPanel.insertPlainText(f'x: {round(res.x(), 2)} '
-                                                                        f'y: {round(res.y(), 2)}\n')
-                        break
-
+            self.bresenham_line(painter)
         elif self.type == 'anti-aliasing':
-            diff = self.pos2 - self.pos1
-            delta_primary = diff.x() if abs(diff.x()) >= abs(diff.y()) else diff.y()
-            delta_secondary = diff.x() if abs(diff.y()) > abs(diff.x()) else diff.y()
-            e = delta_secondary / delta_primary - 1/2
+            self.anti_aliasing(painter)
+        elif self.type == 'Bresenham_circle':
+            self.bresenham_circle(painter)
 
-            primary = 0
-            secondary = 0
-            primary_grow = 1 if delta_primary > 0 else -1
-            secondary_grow = 1 if delta_secondary > 0 else -1
-            increment = -1 if delta_secondary >= 0 else 1
+    def dda_line(self, painter):
+        Diff = self.pos2 - self.pos1
+        len_ = max(abs(Diff.x()), abs(Diff.y()))
+        dx = Diff.x() / len_
+        dy = Diff.y() / len_
+        x = 0
+        y = 0
+        for i in range(int(len_) + 1):
+            x = x + dx
+            y = y + dy
+            point = QPoint(int(x), int(y))
+            painter.drawPoint(point)
+            if self.debug:
+                if self.debug_counter == len_ or not self.debug:
+                    self.scene().debug = False
+                    self.debug = False
+                    self.parent_scene.debug_counter = 0
+                if i == self.debug_counter:
+                    if self.enableDebugPrint:
+                        self.enableDebugPrint = False
+                        self.parent_scene.textPanel.insertPlainText(f'x: {round(x, 2)} y: {round(y, 2)}\n')
+                    break
 
-            for i in range(0, int(abs(delta_primary)) + 1):
+    def bresenham_line(self, painter):
+        diff = self.pos2 - self.pos1
+        delta_primary = diff.x() if abs(diff.x()) >= abs(diff.y()) else diff.y()
+        delta_secondary = diff.x() if abs(diff.y()) > abs(diff.x()) else diff.y()
+        e = delta_secondary / delta_primary - 1 / 2
 
-                if e >= 0:
-                    secondary += secondary_grow
-                    e -= 1
+        primary = 0
+        secondary = 0
+        primary_grow = 1 if delta_primary > 0 else -1
+        secondary_grow = 1 if delta_secondary > 0 else -1
 
-                primary += primary_grow
-                e += abs(delta_secondary/delta_primary)
+        for i in range(0, int(abs(delta_primary)) + 1):
 
-                new_color = 255 * (abs(e) - abs(int(e)))
+            if e >= 0:
+                secondary += secondary_grow
+                e -= 1
+
+            primary += primary_grow
+            e += abs(delta_secondary / delta_primary)
+
+            new_color = 255 * (abs(e) - abs(int(e)))
+            painter.setPen(QColor(new_color, new_color, new_color))
+            res = QPoint(int(primary), int(secondary)) if abs(diff.x()) >= abs(diff.y()) \
+                else QPoint(int(secondary), int(primary))
+            painter.drawPoint(res)
+            if self.debug:
+                if self.debug_counter == int(abs(delta_primary)) or not self.debug:
+                    self.scene().debug = False
+                    self.debug = False
+                    self.parent_scene.debug_counter = 0
+                if i == self.debug_counter:
+                    if self.enableDebugPrint:
+                        self.enableDebugPrint = False
+                        self.parent_scene.textPanel.insertPlainText(f'x: {round(res.x(), 2)} '
+                                                                    f'y: {round(res.y(), 2)}\n')
+                    break
+
+    def anti_aliasing(self, painter):
+        diff = self.pos2 - self.pos1
+        delta_primary = diff.x() if abs(diff.x()) >= abs(diff.y()) else diff.y()
+        delta_secondary = diff.x() if abs(diff.y()) > abs(diff.x()) else diff.y()
+        e = delta_secondary / delta_primary - 1 / 2
+
+        primary = 0
+        secondary = 0
+        primary_grow = 1 if delta_primary > 0 else -1
+        secondary_grow = 1 if delta_secondary > 0 else -1
+        increment = -1 if delta_secondary >= 0 else 1
+
+        for i in range(0, int(abs(delta_primary)) + 1):
+            if e >= 0:
+                secondary += secondary_grow
+                e -= 1
+            primary += primary_grow
+            e += abs(delta_secondary / delta_primary)
+            new_color = 255 * (abs(e) - abs(int(e)))
+            painter.setPen(QColor(new_color, new_color, new_color))
+            res = QPoint(int(primary), int(secondary)) if abs(diff.x()) >= abs(diff.y()) \
+                else QPoint(int(secondary), int(primary))
+            painter.drawPoint(res)
+            if (i != 0) and (i != abs(delta_primary)):
+                new_color = 255 * (1 - (abs(e) - abs(int(e))))
                 painter.setPen(QColor(new_color, new_color, new_color))
-                res = QPoint(int(primary), int(secondary)) if abs(diff.x()) >= abs(diff.y())\
-                    else QPoint(int(secondary), int(primary))
+                new_increment = increment * -1 if e >= 0 else increment
+                res = QPoint(int(primary), int(secondary) + new_increment) if abs(diff.x()) >= abs(diff.y()) \
+                    else QPoint(int(secondary) + new_increment, int(primary))
                 painter.drawPoint(res)
+            if self.debug:
+                if self.debug_counter == int(abs(delta_primary)) or not self.debug:
+                    self.scene().debug = False
+                    self.debug = False
+                    self.parent_scene.debug_counter = 0
+                if i == self.debug_counter:
+                    if self.enableDebugPrint:
+                        self.enableDebugPrint = False
+                        self.parent_scene.textPanel.insertPlainText(f'x: {round(res.x(), 2)} '
+                                                                    f'y: {round(res.y(), 2)}\n')
+                    break
 
-                if (i != 0) and (i != abs(delta_primary)):
-                    new_color = 255 * (1 - (abs(e) - abs(int(e))))
-                    painter.setPen(QColor(new_color, new_color, new_color))
-                    new_increment = increment * -1 if e >= 0 else increment
-                    res = QPoint(int(primary), int(secondary) + new_increment) if abs(diff.x()) >= abs(diff.y()) \
-                        else QPoint(int(secondary) + new_increment, int(primary))
-                    painter.drawPoint(res)
-
-                if self.debug:
-                    if self.debug_counter == int(abs(delta_primary)) or not self.debug:
-                        self.scene().debug = False
-                        self.debug = False
-                        self.parent_scene.debug_counter = 0
-                    if i == self.debug_counter:
-                        if self.enableDebugPrint:
-                            self.enableDebugPrint = False
-                            self.parent_scene.textPanel.insertPlainText(f'x: {round(res.x(), 2)} '
-                                                                        f'y: {round(res.y(), 2)}\n')
-                        break
+    def bresenham_circle(self, painter: QtGui.QPainter):
+        radius = abs(self.pos2.x() - self.pos1.x())
+        center = QPoint(0, 0)
+        delta = 2 - 2 * radius
+        lim = 0
+        x = 0
+        y = radius
+        painter.drawPoint(x, y)
+        while y > lim:
+            if delta < 0:
+                delta1 = 2 * delta + 2 * y - 1
+                if delta1 <= 0:
+                    x = x + 1
+                    delta = delta + 2 * x + 1
+            elif delta > 0:
+                delta2 = 2 * delta - 2 * y - 1
+                if delta2 > 0:
+                    y = y - 1
+                    delta = delta - 2 * y + 1
+            else:
+                x = x + 1
+                y = y - 1
+                delta = delta + 2 * x - 2 * y + 2
+            painter.drawPoint(x, y)
