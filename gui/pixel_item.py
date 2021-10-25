@@ -1,3 +1,4 @@
+import math
 import typing
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QPoint
@@ -17,11 +18,17 @@ class PixelItem(QtWidgets.QGraphicsItem):
         self.enableDebugPrint = True
 
     def boundingRect(self) -> QtCore.QRectF:
-        deltaY = self.pos2.y() - self.pos1.y()
-        deltaX = self.pos2.x() - self.pos1.x()
-        aleft = 0 if deltaX > 0 else deltaX
-        atop = 0 if deltaY > 0 else deltaY
-        return QtCore.QRectF(aleft, atop, abs(deltaX), abs(deltaY))
+        if self.type == 'Bresenham_circle':
+            a = (self.pos1.x() - self.pos2.x()) ** 2
+            b = (self.pos1.y() - self.pos2.y()) ** 2
+            radius = math.sqrt(a + b)
+            return QtCore.QRectF(-radius, -radius, 2 * radius, 2 * radius)
+        else:
+            deltaY = self.pos2.y() - self.pos1.y()
+            deltaX = self.pos2.x() - self.pos1.x()
+            aleft = 0 if deltaX > 0 else deltaX
+            atop = 0 if deltaY > 0 else deltaY
+            return QtCore.QRectF(aleft, atop, abs(deltaX), abs(deltaY))
 
     def paint(self, painter: QtGui.QPainter, option, widget: typing.Optional[QWidget] = ...) -> None:
         if self.type == 'dda':
@@ -136,26 +143,27 @@ class PixelItem(QtWidgets.QGraphicsItem):
                     break
 
     def bresenham_circle(self, painter: QtGui.QPainter):
-        radius = abs(self.pos2.x() - self.pos1.x())
-        center = QPoint(0, 0)
-        delta = 2 - 2 * radius
-        lim = 0
-        x = 0
-        y = radius
-        painter.drawPoint(x, y)
-        while y > lim:
-            if delta < 0:
-                delta1 = 2 * delta + 2 * y - 1
-                if delta1 <= 0:
-                    x = x + 1
-                    delta = delta + 2 * x + 1
-            elif delta > 0:
-                delta2 = 2 * delta - 2 * y - 1
-                if delta2 > 0:
-                    y = y - 1
-                    delta = delta - 2 * y + 1
+        radius = math.sqrt((self.pos1.x() - self.pos2.x())**2 + (self.pos1.y() - self.pos2.y())**2)
+        p = 0
+        q = radius
+        d = 3 - 2 * radius
+        while p <= q:
+            self.draw_circle(painter, 0, 0, p, q)
+            p += 1
+            if d < 0:
+                d = d + 4 * p + 6
             else:
-                x = x + 1
-                y = y - 1
-                delta = delta + 2 * x - 2 * y + 2
-            painter.drawPoint(x, y)
+                radius -= 1
+                q = radius
+                d = d + 4 * (p - q) + 10
+        self.draw_circle(painter, 0, 0, p, q)
+
+    def draw_circle(self, painter: QtGui.QPainter, x, y, p, q):
+        painter.drawPoint(x + p, y + q)
+        painter.drawPoint(x - p, y + q)
+        painter.drawPoint(x + p, y - q)
+        painter.drawPoint(x - p, y - q)
+        painter.drawPoint(x + q, y + p)
+        painter.drawPoint(x - q, y + p)
+        painter.drawPoint(x + q, y - p)
+        painter.drawPoint(x - q, y - p)
