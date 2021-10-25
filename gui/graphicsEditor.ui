@@ -167,7 +167,28 @@
      </rect>
     </property>
     <property name="text">
-     <string>1</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>circle.png</normaloff>circle.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_ellipse">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>ellipse.png</normaloff>ellipse.png</iconset>
     </property>
    </widget>
   </widget>

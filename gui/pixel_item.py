@@ -1,4 +1,5 @@
 import math
+import random
 import typing
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QPoint
@@ -23,6 +24,9 @@ class PixelItem(QtWidgets.QGraphicsItem):
             b = (self.pos1.y() - self.pos2.y()) ** 2
             radius = math.sqrt(a + b)
             return QtCore.QRectF(-radius, -radius, 2 * radius, 2 * radius)
+        elif self.type == 'Ellipse':
+            point = self.pos2 - self.pos1
+            return QtCore.QRectF(-abs(point.x()), -abs(point.y()), 2*abs(point.x()), 2*abs(point.y()))
         else:
             deltaY = self.pos2.y() - self.pos1.y()
             deltaX = self.pos2.x() - self.pos1.x()
@@ -39,6 +43,8 @@ class PixelItem(QtWidgets.QGraphicsItem):
             self.anti_aliasing(painter)
         elif self.type == 'Bresenham_circle':
             self.bresenham_circle(painter)
+        elif self.type == 'Ellipse':
+            self.ellipse(painter)
 
     def dda_line(self, painter):
         Diff = self.pos2 - self.pos1
@@ -143,6 +149,7 @@ class PixelItem(QtWidgets.QGraphicsItem):
                     break
 
     def bresenham_circle(self, painter: QtGui.QPainter):
+        # painter.setPen(QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
         radius = math.sqrt((self.pos1.x() - self.pos2.x())**2 + (self.pos1.y() - self.pos2.y())**2)
         p = 0
         q = radius
@@ -167,3 +174,46 @@ class PixelItem(QtWidgets.QGraphicsItem):
         painter.drawPoint(x - q, y + p)
         painter.drawPoint(x + q, y - p)
         painter.drawPoint(x - q, y - p)
+
+    def ellipse(self, painter: QtGui.QPainter):
+        rx = abs(self.pos1.x() - self.pos2.x())
+        ry = abs(self.pos1.y() - self.pos2.y())
+        x = 0
+        y = ry
+        d1 = (ry ** 2) - ((rx ** 2) * ry) + (0.25 * (rx ** 2))
+        dx = 2 * (ry ** 2) * x
+        dy = 2 * (rx ** 2) * y
+
+        while dx < dy:
+            painter.drawPoint(x, y)
+            painter.drawPoint(-x, y)
+            painter.drawPoint(x, -y)
+            painter.drawPoint(-x, -y)
+            if d1 < 0:
+                x += 1
+                dx = dx + (2 * (ry ** 2))
+                dy = d1 + dx + (ry ** 2)
+            else:
+                x += 1
+                y -= 1
+                dx = dx + (2 * (ry ** 2))
+                dy = dy - (2 * (rx ** 2))
+                d1 = d1 + dx - dy + (ry ** 2)
+
+        d2 = ((ry ** 2) * ((x + 0.5) ** 2)) + ((rx ** 2) * ((y - 1) ** 2)) - ((rx ** 2) * (ry ** 2))
+        while y >= 0:
+            painter.drawPoint(x, y)
+            painter.drawPoint(-x, y)
+            painter.drawPoint(x, -y)
+            painter.drawPoint(-x, -y)
+            if d2 > 0:
+                y -= 1
+                dy = dy - (2 * (rx ** 2))
+                d2 = d2 + (rx ** 2) - dy
+            else:
+                y -= 1
+                x += 1
+                dx = dx + (2 * (dy ** 2))
+                dy = dy - (2 * (dx ** 2))
+                d2 = d2 + dx - dy + (rx ** 2)
+
