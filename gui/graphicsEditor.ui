@@ -191,6 +191,23 @@
       <normaloff>ellipse.png</normaloff>ellipse.png</iconset>
     </property>
    </widget>
+   <widget class="QPushButton" name="btn_hyperbola">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>3</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>hyperbole.png</normaloff>hyperbole.png</iconset>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

@@ -25,15 +25,15 @@ class PixelItem(QtWidgets.QGraphicsItem):
             b = (self.pos1.y() - self.pos2.y()) ** 2
             radius = math.sqrt(a + b)
             return QtCore.QRectF(-radius, -radius, 2 * radius, 2 * radius)
-        elif self.type == 'Ellipse':
-            point = self.pos2 - self.pos1
-            return QtCore.QRectF(-abs(point.x()), -abs(point.y()), 2*abs(point.x()), 2*abs(point.y()))
-        else:
+        elif self.type in ['dda', 'Bresenham', 'anti-aliasing']:
             deltaY = self.pos2.y() - self.pos1.y()
             deltaX = self.pos2.x() - self.pos1.x()
             aleft = 0 if deltaX > 0 else deltaX
             atop = 0 if deltaY > 0 else deltaY
             return QtCore.QRectF(aleft, atop, abs(deltaX), abs(deltaY))
+        else:
+            point = self.pos2 - self.pos1
+            return QtCore.QRectF(-abs(point.x()), -abs(point.y()), 2 * abs(point.x()), 2 * abs(point.y()))
 
     def paint(self, painter: QtGui.QPainter, option, widget: typing.Optional[QWidget] = ...) -> None:
         if self.type == 'dda':
@@ -46,6 +46,8 @@ class PixelItem(QtWidgets.QGraphicsItem):
             self.bresenham_circle(painter)
         elif self.type == 'Ellipse':
             self.ellipse(painter)
+        elif self.type == 'Hyperbola':
+            self.hyperbola(painter)
 
     def dda_line(self, painter):
         Diff = self.pos2 - self.pos1
@@ -181,9 +183,9 @@ class PixelItem(QtWidgets.QGraphicsItem):
         ry = abs(self.pos1.y() - self.pos2.y())
         x = 0
         y = ry
-        d1 = (ry ** 2) - ((rx ** 2) * ry) + (0.25 * (rx ** 2))
-        dx = 2 * (ry ** 2) * x
-        dy = 2 * (rx ** 2) * y
+        d1 = (ry * ry) - (rx * rx * ry) + (0.25 * rx * rx)
+        dx = 2 * ry * ry * x
+        dy = 2 * rx * rx * y
 
         while dx < dy:
             painter.drawPoint(x, y)
@@ -192,16 +194,16 @@ class PixelItem(QtWidgets.QGraphicsItem):
             painter.drawPoint(-x, -y)
             if d1 < 0:
                 x += 1
-                dx = dx + (2 * (ry ** 2))
-                dy = d1 + dx + (ry ** 2)
+                dx = dx + (2 * ry * ry)
+                d1 = d1 + dx + (ry * ry)
             else:
                 x += 1
                 y -= 1
-                dx = dx + (2 * (ry ** 2))
-                dy = dy - (2 * (rx ** 2))
-                d1 = d1 + dx - dy + (ry ** 2)
+                dx = dx + (2 * ry * ry)
+                dy = dy - (2 * rx * rx)
+                d1 = d1 + dx - dy + (ry * ry)
 
-        d2 = ((ry ** 2) * ((x + 0.5) ** 2)) + ((rx ** 2) * ((y - 1) ** 2)) - ((rx ** 2) * (ry ** 2))
+        d2 = ((ry * ry) * ((x + 0.5) * (x + 0.5))) + ((rx * rx) * ((y - 1) * (y - 1))) - (rx * rx * ry * ry)
         while y >= 0:
             painter.drawPoint(x, y)
             painter.drawPoint(-x, y)
@@ -209,12 +211,43 @@ class PixelItem(QtWidgets.QGraphicsItem):
             painter.drawPoint(-x, -y)
             if d2 > 0:
                 y -= 1
-                dy = dy - (2 * (rx ** 2))
-                d2 = d2 + (rx ** 2) - dy
+                dy = dy - (2 * rx * rx)
+                d2 = d2 + (rx * rx) - dy
             else:
                 y -= 1
                 x += 1
-                dx = dx + (2 * (dy ** 2))
-                dy = dy - (2 * (dx ** 2))
-                d2 = d2 + dx - dy + (rx ** 2)
+                dx = dx + (2 * ry * ry)
+                dy = dy - (2 * rx * rx)
+                d2 = d2 + dx - dy + (rx * rx)
+
+    def hyperbola(self, painter: QtGui.QPainter):
+        a = abs(self.pos1.x() - self.pos2.x())
+        b = abs(self.pos1.y() - self.pos2.y())
+        x = a
+        y = 0
+        d = 2 * a * a - 2 * a * b * b - b * b
+        while y <= b * b * x / (a * a):
+            painter.drawPoint(x, y)
+            painter.drawPoint(-x, y)
+            painter.drawPoint(x, -y)
+            painter.drawPoint(-x, -y)
+            if d < 0:
+                d += 2 * a * a * (2 * y + 3)
+            else:
+                d += 2 * a * a * (2 * y + 3) - 4 * b * b * (x + 1)
+                x += 1
+            y += 1
+
+        init = 100
+        while init - 1:
+            if d < 0:
+                d += 2 * b * b * (3 + 2 * x)
+            else:
+                d += 2 * b * b * (3 + 2 * x) - 4 * a * a * (y + 1)
+                y += 1
+            x += 1
+            painter.drawPoint(x, y)
+            painter.drawPoint(-x, y)
+            painter.drawPoint(x, -y)
+            painter.drawPoint(-x, -y)
 

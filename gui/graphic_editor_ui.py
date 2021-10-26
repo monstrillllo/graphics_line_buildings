@@ -72,6 +72,13 @@ class Ui_GraphicEditor(object):
         icon3.addPixmap(QtGui.QPixmap("ellipse.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_ellipse.setIcon(icon3)
         self.btn_ellipse.setObjectName("btn_ellipse")
+        self.btn_hyperbola = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_hyperbola.setGeometry(QtCore.QRect(300, 3, 25, 25))
+        self.btn_hyperbola.setText("")
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap("hyperbole.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_hyperbola.setIcon(icon4)
+        self.btn_hyperbola.setObjectName("btn_hyperbola")
         GraphicEditor.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(GraphicEditor)
