@@ -1,3 +1,4 @@
+# Developed by Sapeginskiy Evgeniy BSUIR group 821703
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QRectF
 from pixel_item import PixelItem

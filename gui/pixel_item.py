@@ -1,3 +1,4 @@
+# Developed by Sapeginskiy Evgeniy BSUIR group 821703
 import math
 import random
 import typing
