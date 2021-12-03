@@ -43,7 +43,8 @@ class PixelItem(QtWidgets.QGraphicsItem):
         elif self.type == 'anti-aliasing':
             self.anti_aliasing(painter)
         elif self.type == 'Bresenham_circle':
-            self.bresenham_circle(painter)
+            # self.bresenham_circle(painter)
+            self.circle2(painter)
         elif self.type == 'Ellipse':
             self.ellipse(painter)
         elif self.type == 'Hyperbola':
@@ -167,6 +168,7 @@ class PixelItem(QtWidgets.QGraphicsItem):
                 q = radius
                 d = d + 4 * (p - q) + 10
         self.draw_circle(painter, 0, 0, p, q)
+        painter.drawRect(self.boundingRect())
 
     def draw_circle(self, painter: QtGui.QPainter, x, y, p, q):
         painter.drawPoint(x + p, y + q)
@@ -251,3 +253,27 @@ class PixelItem(QtWidgets.QGraphicsItem):
             painter.drawPoint(x, -y)
             painter.drawPoint(-x, -y)
 
+    def circle2(self, painter: QtGui.QPainter):
+        center = self.pos1
+        radius = math.sqrt((abs(self.pos1.x() - self.pos2.x()) ** 2) + (abs(self.pos1.y() - self.pos2.y()) ** 2))
+        x = 0
+        y = radius
+        delta = 1 - 2 * radius
+        error_ = 0
+        while y >= x:
+            painter.drawPoint(center.x() + x, center.y() + y)
+            painter.drawPoint(center.x() + x, center.y() - y)
+            painter.drawPoint(center.x() - x, center.y() + y)
+            painter.drawPoint(center.x() - x, center.y() - y)
+            painter.drawPoint(center.x() + y, center.y() + x)
+            painter.drawPoint(center.x() + y, center.y() - x)
+            painter.drawPoint(center.x() - y, center.y() + x)
+            painter.drawPoint(center.x() - y, center.y() - x)
+            error_ = 2 * (delta + y) - 1
+            if (delta < 0) and (error_ <= 0):
+                delta += 2 * (1 + x) + 1
+                continue
+            if (delta > 0) and (error_ > 0):
+                delta -= 2 * (y - 1) + 1
+                continue
+            delta += 2 * ((x + 1) - (y - 1))
